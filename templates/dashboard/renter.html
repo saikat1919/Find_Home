@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Find Home{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>Renter Dashboard</h2>
+                <p class="text-muted">Welcome, {{ user.get_full_name|default:user.username }}!</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Saved Listings -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-heart text-danger"></i> Saved Listings ({{ saved_listings.count }})
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% for saved in saved_listings %}
+                            <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                {% if saved.listing.images.first %}
+                                    <img src="{{ saved.listing.images.first.image.url }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;" alt="Property">
+                                {% else %}
+                                    <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-home text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ saved.listing.title }}</h6>
+                                    <p class="text-muted small mb-1">{{ saved.listing.area }}</p>
+                                    <p class="text-primary small mb-0">৳{{ saved.listing.rent }}/month</p>
+                                </div>
+                                <div class="ms-2">
+                                    <a href="{% url 'listing_detail' saved.listing.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted">No saved listings yet. <a href="{% url 'home' %}">Browse properties</a> to save your favorites!</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <!-- Interest History -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-hand-paper text-warning"></i> Interest History ({{ interests.count }})
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% for interest in interests %}
+                            <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                {% if interest.listing.images.first %}
+                                    <img src="{{ interest.listing.images.first.image.url }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;" alt="Property">
+                                {% else %}
+                                    <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-home text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ interest.listing.title }}</h6>
+                                    <p class="text-muted small mb-1">{{ interest.listing.area }}</p>
+                                    <p class="small mb-0 text-muted">Showed interest on {{ interest.created_at|date:"M d, Y" }}</p>
+                                </div>
+                                <div class="ms-2">
+                                    <a href="{% url 'listing_detail' interest.listing.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted">No interests shown yet. <a href="{% url 'home' %}">Browse properties</a> and show interest in ones you like!</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Chat - {{ listing.title }} - Find Home{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                {% if listing.images.first %}
+                                    <img src="{{ listing.images.first.image.url }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;" alt="Property">
+                                {% else %}
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-home text-muted"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0">{{ listing.title }}</h5>
+                                <small class="text-muted">Chat with {{ other_user.get_full_name|default:other_user.username }}</small>
+                            </div>
+                            <div>
+                                <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-arrow-left"></i> Back to Listing
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-0">
+                        <!-- Chat Messages Container -->
+                        <div class="chat-container" id="chatContainer">
+                            {% for message in messages %}
+                                <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
+                                    <div class="message-content">
+                                        {{ message.message|linebreaks }}
+                                    </div>
+                                    <small class="text-muted d-block mt-1">
+                                        {{ message.timestamp|date:"M d, H:i" }}
+                                    </small>
+                                </div>
+                            {% empty %}
+                                <div class="text-center text-muted py-4">
+                                    <i class="fas fa-comments fa-2x mb-2"></i>
+                                    <p>No messages yet. Start the conversation!</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Message Input -->
+                        <div class="p-3 border-top">
+                            <form id="messageForm" class="d-flex">
+                                {% csrf_token %}
+                                <input type="hidden" name="receiver_id" value="{{ other_user.id }}">
+                                <div class="flex-grow-1 me-2">
+                                    <input type="text" class="form-control" name="message" placeholder="Type your message..." required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-scroll to bottom of chat
+    function scrollToBottom() {
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    // Initial scroll to bottom
+    scrollToBottom();
+    
+    // Handle message form submission
+    $('#messageForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const messageInput = $(this).find('input[name="message"]');
+        const message = messageInput.val().trim();
+        
+        if (!message) return;
+        
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        
+        $.post(`/listing/{{ listing.pk }}/send-message/`, $(this).serialize(), function(data) {
+            if (data.success) {
+                // Add message to chat container
+                const chatContainer = $('#chatContainer');
+                const messageHtml = `
+                    <div class="message sent">
+                        <div class="message-content">${message}</div>
+                        <small class="text-muted d-block mt-1">Just now</small>
+                    </div>
+                `;
+                chatContainer.append(messageHtml);
+                
+                // Clear input and scroll to bottom
+                messageInput.val('');
+                scrollToBottom();
+            }
+        });
+    });
+    
+    // Auto-refresh messages every 5 seconds
+    setInterval(function() {
+        location.reload();
+    }, 5000);
+    
+    // Handle Enter key in message input
+    $('input[name="message"]').on('keypress', function(e) {
+        if (e.which === 13) {
+            $('#messageForm').submit();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Find Home - Student & Family Rental Platform{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Base styles */
+        body {
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: #2c3e50 !important;
+            font-size: 1.5rem;
+        }
+        
+        /* Mobile-first navbar adjustments */
+        .navbar {
+            padding: 0.5rem 0;
+        }
+        
+        .navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .navbar-nav .nav-link {
+            padding: 0.75rem 1rem;
+        }
+        
+        /* Hero section responsive */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-section p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Card hover effects with better mobile support */
+        .card-hover {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Listing cards responsive */
+        .listing-card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            height: 100%;
+        }
+        
+        .listing-card .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .listing-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .listing-card .card-title {
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+        
+        .listing-card .card-text {
+            font-size: 0.9rem;
+        }
+        
+        /* Chat container responsive */
+        .chat-container {
+            height: 350px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+        
+        .message.sent {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .message.received {
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+        
+        /* Status badges responsive */
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            white-space: nowrap;
+        }
+        
+        .interest-notification {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        
+        /* Button improvements for mobile */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+        }
+        
+        .btn-group-mobile {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        /* Form improvements */
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+        
+        /* Footer responsive */
+        footer {
+            margin-top: 3rem;
+        }
+        
+        footer h5 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        footer p, footer li {
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive breakpoints */
+        
+        /* Small devices (landscape phones, 576px and up) */
+        @media (min-width: 576px) {
+            .hero-section {
+                padding: 80px 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .chat-container {
+                height: 400px;
+                padding: 15px;
+            }
+            
+            .message {
+                max-width: 75%;
+            }
+        }
+        
+        /* Medium devices (tablets, 768px and up) */
+        @media (min-width: 768px) {
+            .navbar-brand {
+                font-size: 1.75rem;
+            }
+            
+            .btn-group-mobile {
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+            
+            .listing-card .card-img-top {
+                height: 220px;
+            }
+            
+            .message {
+                max-width: 70%;
+            }
+        }
+        
+        /* Large devices (desktops, 992px and up) */
+        @media (min-width: 992px) {
+            .hero-section h1 {
+                font-size: 3rem;
+            }
+            
+            .hero-section p {
+                font-size: 1.25rem;
+            }
+            
+            .listing-card .card-img-top {
+                height: 250px;
+            }
+        }
+        
+        /* Extra large devices (large desktops, 1200px and up) */
+        @media (min-width: 1200px) {
+            .hero-section {
+                padding: 100px 0;
+            }
+        }
+        
+        /* Mobile-specific improvements */
+        @media (max-width: 575.98px) {
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+            
+            .hero-section {
+                padding: 40px 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.75rem;
+            }
+            
+            .hero-section p {
+                font-size: 1rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .btn:last-child {
+                margin-bottom: 0;
+            }
+            
+            .dropdown-menu {
+                width: 100%;
+                position: static !important;
+                transform: none !important;
+                border: none;
+                box-shadow: none;
+                background-color: #f8f9fa;
+                margin-top: 0.5rem;
+            }
+            
+            .navbar-collapse {
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid #dee2e6;
+            }
+            
+            .message {
+                max-width: 90%;
+                padding: 8px 12px;
+            }
+            
+            .chat-container {
+                height: 300px;
+                padding: 8px;
+            }
+            
+            .status-badge {
+                font-size: 0.7rem;
+                padding: 3px 6px;
+            }
+            
+            .interest-notification {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            
+            /* Stack footer columns on mobile */
+            .footer-col {
+                margin-bottom: 2rem;
+            }
+            
+            /* Make tables responsive */
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+            
+            /* Improve form spacing on mobile */
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            /* Better spacing for alerts */
+            .alert {
+                margin-bottom: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Landscape phone specific adjustments */
+        @media (max-width: 767.98px) and (orientation: landscape) {
+            .hero-section {
+                padding: 30px 0;
+            }
+            
+            .chat-container {
+                height: 250px;
+            }
+        }
+        
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .card-hover:hover {
+                transform: none;
+            }
+            
+            .card-hover:active {
+                transform: translateY(-2px);
+                transition: transform 0.1s ease;
+            }
+            
+            .btn {
+                min-height: 44px; /* iOS recommended touch target */
+                padding: 0.75rem 1rem;
+            }
+            
+            .nav-link {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            .navbar, .btn, footer {
+                display: none;
+            }
+            
+            .hero-section {
+                background: none !important;
+                color: black !important;
+            }
+            
+            .card {
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .btn {
+                border-width: 2px;
+            }
+            
+            .card {
+                border-width: 2px;
+            }
+        }
+        
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .card-hover {
+                transition: none;
+            }
+            
+            .card-hover:hover {
+                transform: none;
+            }
+            
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-home"></i> Find Home
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Browse Listings</a>
+                    </li>
+                    {% if user.is_authenticated and user.userprofile.user_type == 'owner' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_listing' %}">Post Advertisement</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> <span class="d-none d-sm-inline">{{ user.get_full_name|default:user.username }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item" style="border: none; background: none; width: 100%; text-align: left;">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary text-white ms-2" href="{% url 'register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">{{ message }}</div>
+                        <button type="button" class="btn-close ms-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 footer-col">
+                    <h5><i class="fas fa-home"></i> Find Home</h5>
+                    <p class="mb-0">Connecting students and families with perfect rental homes.</p>
+                </div>
+                <div class="col-md-6 footer-col">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="{% url 'home' %}" class="text-light text-decoration-none">Browse Listings</a></li>
+                        <li><a href="{% url 'register' %}" class="text-light text-decoration-none">Register</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Find Home. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <script>
+        // CSRF Token for AJAX requests
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+        
+        // Enhanced save/unsave listing function with better mobile feedback
+        function toggleSave(listingId) {
+            const btn = $(`#save-btn-${listingId}`);
+            const originalHtml = btn.html();
+            
+            // Show loading state
+            btn.html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+            btn.prop('disabled', true);
+            
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+            
+            $.post(`/listing/${listingId}/save/`)
+            .done(function(data) {
+                if (data.saved) {
+                    btn.html('<i class="fas fa-heart"></i> Saved');
+                    btn.removeClass('btn-outline-danger').addClass('btn-danger');
+                } else {
+                    btn.html('<i class="far fa-heart"></i> Save');
+                    btn.removeClass('btn-danger').addClass('btn-outline-danger');
+                }
+            })
+            .fail(function() {
+                btn.html(originalHtml);
+                alert('Failed to save listing. Please try again.');
+            })
+            .always(function() {
+                btn.prop('disabled', false);
+            });
+        }
+        
+        // Enhanced show interest function with better mobile feedback
+        function showInterest(listingId) {
+            const btn = $(`#interest-btn-${listingId}`);
+            const originalText = btn.text();
+            
+            // Show loading state
+            btn.html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+            btn.prop('disabled', true);
+            
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+            
+            $.post(`/listing/${listingId}/interest/`)
+            .done(function(data) {
+                if (data.success) {
+                    // Show success message with better mobile UX
+                    if (window.innerWidth <= 576) {
+                        // Mobile: use inline message
+                        btn.parent().append('<div class="alert alert-success mt-2 mb-0 py-2 px-3 small">' + data.message + '</div>');
+                        setTimeout(() => {
+                            btn.parent().find('.alert').fadeOut();
+                        }, 3000);
+                    } else {
+                        // Desktop: use alert
+                        alert(data.message);
+                    }
+                    btn.html('<i class="fas fa-check"></i> Interest Shown').removeClass('btn-primary').addClass('btn-success');
+                } else {
+                    alert(data.message);
+                    btn.text(originalText).prop('disabled', false);
+                }
+            })
+            .fail(function() {
+                btn.text(originalText).prop('disabled', false);
+                alert('Failed to show interest. Please try again.');
+            });
+        }
+        
+        // Improve mobile menu behavior
+        $(document).ready(function() {
+            // Close mobile menu when clicking on a link
+            $('.navbar-nav .nav-link').on('click', function() {
+                if (window.innerWidth <= 992) {
+                    $('.navbar-collapse').collapse('hide');
+                }
+            });
+            
+            // Improve dropdown behavior on mobile
+            if (window.innerWidth <= 576) {
+                $('.dropdown-toggle').on('click', function(e) {
+                    e.preventDefault();
+                    $(this).next('.dropdown-menu').toggle();
+                });
+                
+                // Close dropdown when clicking outside
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('.dropdown').length) {
+                        $('.dropdown-menu').hide();
+                    }
+                });
+            }
+            
+            // Add smooth scrolling for better mobile UX
+            $('a[href^="#"]').on('click', function(e) {
+                e.preventDefault();
+                const target = $(this.getAttribute('href'));
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 70
+                    }, 600);
+                }
+            });
+        });
+        
+        // Handle orientation changes
+        $(window).on('orientationchange resize', function() {
+            // Collapse mobile menu on orientation change
+            if (window.innerWidth > 992) {
+                $('.navbar-collapse').removeClass('show');
+                $('.dropdown-menu').hide();
+            }
+        });
+    </script>
+    
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Find Home{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mb-4">
+                <h2>Admin Dashboard</h2>
+                <p class="text-muted">Welcome, Administrator!</p>
+            </div>
+        </div>
+        
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ total_listings|default:0 }}</h4>
+                                <p class="mb-0">Total Listings</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-building fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ total_users|default:0 }}</h4>
+                                <p class="mb-0">Total Users</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ pending_reports|default:0 }}</h4>
+                                <p class="mb-0">Pending Reports</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-flag fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ new_listings_today|default:0 }}</h4>
+                                <p class="mb-0">New Today</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-plus fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Sections -->
+        <div class="row">
+            <!-- Recent Listings -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-building"></i> Recent Listings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_listings %}
+                            {% for listing in recent_listings %}
+                                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                    {% if listing.images.first %}
+                                        <img src="{{ listing.images.first.image.url }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Property">
+                                    {% else %}
+                                        <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-home text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ listing.title }}</h6>
+                                        <p class="text-muted small mb-1">by {{ listing.owner.get_full_name|default:listing.owner.username }}</p>
+                                        <p class="small mb-0 text-muted">{{ listing.created_at|date:"M d, Y" }}</p>
+                                    </div>
+                                    <div class="ms-2">
+                                        <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No recent listings found.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Reports -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-flag text-warning"></i> Pending Reports
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if reports %}
+                            {% for report in reports %}
+                                <div class="alert alert-warning mb-3">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ report.reason }}</h6>
+                                            <p class="mb-1 small">Reported by: {{ report.reporter.get_full_name|default:report.reporter.username }}</p>
+                                            <p class="mb-1 small">Listing: {{ report.listing.title }}</p>
+                                            <p class="mb-0 text-muted small">{{ report.created_at|date:"M d, Y H:i" }}</p>
+                                        </div>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'listing_detail' report.listing.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                                            <form method="post" action="{% url 'resolve_report' report.pk %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-success">Resolve</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No pending reports.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users"></i> Recent Users
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_users %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Email</th>
+                                            <th>User Type</th>
+                                            <th>Joined</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in recent_users %}
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
+                                                            <span class="text-white small">{{ user.first_name.0|default:user.username.0|upper }}</span>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-0">{{ user.get_full_name|default:user.username }}</h6>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ user.email }}</td>
+                                                <td>
+                                                    {% if user.userprofile.user_type == 'owner' %}
+                                                        <span class="badge bg-info">Owner</span>
+                                                    {% else %}
+                                                        <span class="badge bg-success">Renter</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                                                <td>
+                                                    {% if user.is_active %}
+                                                        <span class="badge bg-success">Active</span>
+                                                    {% else %}
+                                                        <span class="badge bg-danger">Inactive</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <form method="post" action="{% url 'toggle_user_status' user.pk %}" class="d-inline">
+                                                            {% csrf_token %}
+                                                            {% if user.is_active %}
+                                                                <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
+                                                            {% else %}
+                                                                <button type="submit" class="btn btn-sm btn-success">Activate</button>
+                                                            {% endif %}
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No users found.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

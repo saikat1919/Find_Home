@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, User
 from django.urls import reverse
+from cloudinary.models import CloudinaryField
 
 class UserProfile(models.Model):
     USER_TYPES = (
@@ -51,7 +52,7 @@ class HouseListing(models.Model):
 
 class HouseImage(models.Model):
     listing = models.ForeignKey(HouseListing, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='house_images/')
+    image = CloudinaryField('image')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

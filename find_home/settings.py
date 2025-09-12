@@ -58,7 +58,8 @@ TEMPLATES = [
 ]
 
 DATABASES = {
-        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL') or
+        f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
 }
 
 STATIC_URL = '/static/'

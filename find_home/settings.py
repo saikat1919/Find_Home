@@ -15,8 +15,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
     'home',
 ]
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dzjgspcoc',
+    'API_KEY': '535487696691234',
+    'API_SECRET': 'a1syRvfU5f3pgB8DwlcQBwHEZ3Q',
+}
 
 
 MIDDLEWARE = [
@@ -60,4 +70,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
-LOGOUT_REDIRECT_URL = '/' 
+LOGOUT_REDIRECT_URL = '/'

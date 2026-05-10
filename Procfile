@@ -1,1 +1,1 @@
-web: gunicorn find_home.wsgi
+web: gunicorn find_home.wsgi --workers 1

@@ -4,9 +4,9 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key')
-DEBUG = True
-ALLOWED_HOSTS = [".onrender.com"]
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key-change-in-production')
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.koyeb.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,14 +23,14 @@ INSTALLED_APPS = [
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dzjgspcoc',
-    'API_KEY': '535487696691234',
-    'API_SECRET': 'a1syRvfU5f3pgB8DwlcQBwHEZ3Q',
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'dzjgspcoc'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', '535487696691234'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'a1syRvfU5f3pgB8DwlcQBwHEZ3Q'),
 }
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -40,6 +40,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'find_home.urls'
+WSGI_APPLICATION = 'find_home.wsgi.application'
 
 TEMPLATES = [
     {
@@ -58,13 +59,25 @@ TEMPLATES = [
 ]
 
 DATABASES = {
-        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL') or
-        f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL') or f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+    )
 }
+
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+_static_dir = BASE_DIR / 'static'
+if _static_dir.exists():
+    STATICFILES_DIRS = [_static_dir]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

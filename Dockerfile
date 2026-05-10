@@ -18,6 +18,8 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN chmod +x entrypoint.sh
+
 # Collect static files at build time (dummy key since no DB needed here)
 RUN DJANGO_SECRET_KEY=build-collect-static python manage.py collectstatic --noinput
 

@@ -5,8 +5,16 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+# Install system libraries needed by psycopg2 and Pillow
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 

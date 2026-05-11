@@ -6,7 +6,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key-change-in-production')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.koyeb.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,9 +29,9 @@ INSTALLED_APPS = [
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'dzjgspcoc'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', '535487696691234'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'a1syRvfU5f3pgB8DwlcQBwHEZ3Q'),
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
 }
 
 MIDDLEWARE = [
